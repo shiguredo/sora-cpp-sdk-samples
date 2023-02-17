@@ -24,6 +24,7 @@ struct SDLSampleConfig {
   std::string audio_codec_type;
   int audio_codec_lyra_bitrate;
   boost::optional<bool> audio_codec_lyra_usedtx;
+  bool check_lyra_version = false;
   boost::optional<bool> multistream;
   int width = 640;
   int height = 480;
@@ -81,6 +82,7 @@ class SDLSample : public std::enable_shared_from_this<SDLSample>,
     config.audio_codec_type = config_.audio_codec_type;
     config.audio_codec_lyra_bitrate = config_.audio_codec_lyra_bitrate;
     config.audio_codec_lyra_usedtx = config_.audio_codec_lyra_usedtx;
+    config.check_lyra_version = config_.check_lyra_version;
     config.metadata = config_.metadata;
     conn_ = sora::SoraSignaling::Create(config);
 
@@ -227,6 +229,8 @@ int main(int argc, char* argv[]) {
   add_optional_bool(app, "--audio-codec-lyra-usedtx",
                     config.audio_codec_lyra_usedtx,
                     "Use DTX used in the audio codec Lyra (default: none)");
+  app.add_option("--check-lyra-version", config.check_lyra_version,
+                 "Enable Lyra version checking (default: false)");
   std::string metadata;
   app.add_option("--metadata", metadata,
                  "Signaling metadata used in connect message")
@@ -257,7 +261,8 @@ int main(int argc, char* argv[]) {
     rtc::LogMessage::LogThreads();
   }
 
-  auto context = sora::SoraClientContext::Create(sora::SoraClientContextConfig());
+  auto context =
+      sora::SoraClientContext::Create(sora::SoraClientContextConfig());
   auto sdlsample = std::make_shared<SDLSample>(context, config);
   sdlsample->Run();
 
