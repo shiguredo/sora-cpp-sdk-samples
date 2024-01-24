@@ -19,6 +19,7 @@
   - SORA_CPP_SDK_VERSION を 2024.1.0 にあげる
   - SDL2 を 2.30.0 にあげる
   - CLI11 を v2.4.0 にあげる
+  - WEBRTC_BUILD_VERSION を m121.6167.3.0 にあげる
   - @miosakuma @enm10k
 
 ## sora-cpp-sdk-2023.17.0
