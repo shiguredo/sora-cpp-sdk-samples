@@ -149,9 +149,13 @@ class MomoSample : public std::enable_shared_from_this<MomoSample>,
     config.proxy_username = config_.proxy_username;
     config.proxy_password = config_.proxy_password;
     config.network_manager =
-        context_->connection_context()->default_network_manager();
+        context_->signaling_thread()->BlockingCall([this]() {
+          return context_->connection_context()->default_network_manager();
+        });
     config.socket_factory =
-        context_->connection_context()->default_socket_factory();
+        context_->signaling_thread()->BlockingCall([this]() {
+          return context_->connection_context()->default_socket_factory();
+        });
     conn_ = sora::SoraSignaling::Create(config);
 
     boost::asio::executor_work_guard<boost::asio::io_context::executor_type>
