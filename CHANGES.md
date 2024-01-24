@@ -18,6 +18,8 @@
 - [UPDATE] VERSIONS のライブラリをアップデートする
   - SORA_CPP_SDK_VERSION を 2024.1.0 にあげる
   - @miosakuma
+- [UPDATE] Boost を1.84.0 にあげる
+- [UPDATE] CMake を3.28.1 にあげる
 
 ## sora-cpp-sdk-2023.17.0
 
