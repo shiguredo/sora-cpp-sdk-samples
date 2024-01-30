@@ -40,6 +40,7 @@ struct MomoSampleConfig {
   boost::optional<bool> simulcast;
   boost::optional<bool> data_channel_signaling;
   boost::optional<bool> ignore_disconnect_websocket;
+  boost::optional<bool> skip_i420_conv;
 
   std::string proxy_url;
   std::string proxy_username;
@@ -346,6 +347,11 @@ int main(int argc, char* argv[]) {
                  "Perform MJPEG deoode and video resize by hardware "
                  "acceleration only on supported devices (default: false)");
 
+  add_optional_bool(
+      app, "--skip-i420-conv", config.skip_i420_conv,
+      "Skip the process of converting video buffer to I420 format "
+      "when using simulcast (default: none)");
+
   // Sora に関するオプション
   app.add_option("--signaling-url", config.signaling_url, "Signaling URL")
       ->required();
@@ -427,8 +433,12 @@ int main(int argc, char* argv[]) {
     rtc::LogMessage::LogThreads();
   }
 
-  auto context =
-      sora::SoraClientContext::Create(sora::SoraClientContextConfig());
+  auto context_config = sora::SoraClientContextConfig();
+  if (config.skip_i420_conv.has_value()) {
+    context_config.skip_i420_conv = *config.skip_i420_conv;
+  }
+
+  auto context = sora::SoraClientContext::Create(context_config);
   auto momosample = std::make_shared<MomoSample>(context, config);
   momosample->Run();
 
