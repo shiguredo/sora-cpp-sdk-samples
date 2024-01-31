@@ -30,7 +30,7 @@ struct MomoSampleConfig {
   std::string audio_codec_type;
   std::string resolution = "VGA";
   bool hw_mjpeg_decoder = false;
-  bool force_simulcast_i420_conversion;
+  bool force_simulcast_i420_conversion = true;
   int video_bit_rate = 0;
   int audio_bit_rate = 0;
   boost::json::value video_h264_params;
