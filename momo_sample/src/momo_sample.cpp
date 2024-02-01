@@ -30,7 +30,7 @@ struct MomoSampleConfig {
   std::string audio_codec_type;
   std::string resolution = "VGA";
   bool hw_mjpeg_decoder = false;
-  bool force_simulcast_i420_conversion = true;
+  bool force_i420_conversion_for_simulcast_adapter = true;
   int video_bit_rate = 0;
   int audio_bit_rate = 0;
   boost::json::value video_h264_params;
@@ -346,8 +346,8 @@ int main(int argc, char* argv[]) {
   app.add_option("--hw-mjpeg-decoder", config.hw_mjpeg_decoder,
                  "Perform MJPEG deoode and video resize by hardware "
                  "acceleration only on supported devices (default: false)");
-  app.add_option("--force-simulcast-i420-conversion",
-                 config.force_simulcast_i420_conversion,
+  app.add_option("--force-i420-conversion-for-simulcast-adapter",
+                 config.force_i420_conversion_for_simulcast_adapter,
                  "Convert video frame buffers to I420 format before encoding, "
                  "effective only when use_simulcast_adapter is set to true in "
                  "SoraClientContextConfig (default: true)");
@@ -433,8 +433,8 @@ int main(int argc, char* argv[]) {
   }
 
   auto context_config = sora::SoraClientContextConfig();
-  context_config.force_simulcast_i420_conversion =
-      config.force_simulcast_i420_conversion;
+  context_config.force_i420_conversion_for_simulcast_adapter =
+      config.force_i420_conversion_for_simulcast_adapter;
   auto context = sora::SoraClientContext::Create(context_config);
 
   auto momosample = std::make_shared<MomoSample>(context, config);
