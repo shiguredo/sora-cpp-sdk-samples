@@ -21,8 +21,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: microsoft/setup-msbuild@v1.1
       - run: python3 sdl_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 momo_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 messaging_recvonly_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Artifact
         run: |
           mkdir ${{ matrix.name }}
@@ -46,8 +52,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 sdl_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 momo_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 messaging_recvonly_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Artifact
         run: |
           mkdir ${{ matrix.name }}
@@ -84,8 +96,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install libdrm-dev libva-dev
       - run: python3 sdl_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 momo_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 messaging_recvonly_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Artifact
         run: |
           mkdir ${{ matrix.name }}
@@ -114,8 +132,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install libdrm-dev libva-dev
       - run: python3 sdl_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 momo_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: python3 messaging_recvonly_sample/${{ matrix.name }}/run.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Artifact
         run: |
           mkdir ${{ matrix.name }}
