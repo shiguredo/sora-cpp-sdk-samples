@@ -2,6 +2,8 @@ import os
 import multiprocessing
 import argparse
 import sys
+from typing import Optional
+
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = os.path.join(PROJECT_DIR, '..', '..')
 sys.path.insert(0, BASE_DIR)
@@ -26,7 +28,7 @@ from base import (  # noqa
 )
 
 
-def install_deps(source_dir, build_dir, install_dir, debug):
+def install_deps(source_dir, build_dir, install_dir, debug, local_sdk_install_dir: Optional[str] = None):
     with cd(BASE_DIR):
         version = read_version_file('VERSION')
 
@@ -37,6 +39,7 @@ def install_deps(source_dir, build_dir, install_dir, debug):
             'source_dir': source_dir,
             'install_dir': install_dir,
             'platform': 'macos_arm64',
+            'local_sdk_install_dir': local_sdk_install_dir,
         }
         install_webrtc(**install_webrtc_args)
 
@@ -50,6 +53,7 @@ def install_deps(source_dir, build_dir, install_dir, debug):
             'install_dir': install_dir,
             'sora_version': version['SORA_CPP_SDK_VERSION'],
             'platform': 'macos_arm64',
+            'local_sdk_install_dir': local_sdk_install_dir,
         }
         install_boost(**install_boost_args)
 
@@ -61,6 +65,7 @@ def install_deps(source_dir, build_dir, install_dir, debug):
             'install_dir': install_dir,
             'sora_version': version['SORA_CPP_SDK_VERSION'],
             'platform': 'macos_arm64',
+            'local_sdk_install_dir': local_sdk_install_dir,
         }
         install_lyra(**install_lyra_args)
 
@@ -104,6 +109,7 @@ def install_deps(source_dir, build_dir, install_dir, debug):
             'source_dir': source_dir,
             'install_dir': install_dir,
             'platform': 'macos_arm64',
+            'local_sdk_install_dir': local_sdk_install_dir,
         }
         install_sora(**install_sora_args)
 
@@ -119,7 +125,7 @@ def install_deps(source_dir, build_dir, install_dir, debug):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action='store_true')
-
+    parser.add_argument("--local-sdk", default="")
     args = parser.parse_args()
 
     configuration_dir = 'debug' if args.debug else 'release'
@@ -127,11 +133,12 @@ def main():
     source_dir = os.path.join(BASE_DIR, '_source', dir, configuration_dir)
     build_dir = os.path.join(BASE_DIR, '_build', dir, configuration_dir)
     install_dir = os.path.join(BASE_DIR, '_install', dir, configuration_dir)
+    local_sdk_install_dir = os.path.join(args.local_sdk, '_install', dir, configuration_dir)
     mkdir_p(source_dir)
     mkdir_p(build_dir)
     mkdir_p(install_dir)
 
-    install_deps(source_dir, build_dir, install_dir, args.debug)
+    install_deps(source_dir, build_dir, install_dir, args.debug, local_sdk_install_dir)
 
     configuration = 'Debug' if args.debug else 'Release'
 

@@ -353,7 +353,17 @@ def install_rootfs(version, install_dir, conf):
 
 
 @versioned
-def install_webrtc(version, source_dir, install_dir, platform: str):
+def install_webrtc(version, source_dir, install_dir, platform: str, local_sdk_install_dir: Optional[str] = None):
+    if local_sdk_install_dir:
+        os.symlink(
+            os.path.join(local_sdk_install_dir, 'webrtc'),
+            os.path.join(install_dir, 'webrtc')
+        )
+    else:
+        install_webrtc_from_gh_release(version, source_dir, install_dir, platform)
+
+
+def install_webrtc_from_gh_release(version, source_dir, install_dir, platform: str):
     win = platform.startswith("windows_")
     filename = f'webrtc.{platform}.{"zip" if win else "tar.gz"}'
     rm_rf(os.path.join(source_dir, filename))
@@ -421,7 +431,16 @@ def install_llvm(version, install_dir,
 
 
 @versioned
-def install_boost(version, source_dir, install_dir, sora_version, platform: str):
+def install_boost(version, source_dir, install_dir, sora_version, platform: str, local_sdk_install_dir: Optional[str] = None):
+    if local_sdk_install_dir:
+        os.symlink(
+            os.path.join(local_sdk_install_dir, 'boost'),
+            os.path.join(install_dir, 'boost')
+        )
+    else:
+        install_boost_from_gh_release(version, source_dir, install_dir, platform)
+
+def install_boost_from_gh_release(version, source_dir, install_dir, sora_version, platform: str):
     win = platform.startswith("windows_")
     filename = f'boost-{version}_sora-cpp-sdk-{sora_version}_{platform}.{"zip" if win else "tar.gz"}'
     rm_rf(os.path.join(source_dir, filename))
@@ -433,7 +452,17 @@ def install_boost(version, source_dir, install_dir, sora_version, platform: str)
 
 
 @versioned
-def install_lyra(version, source_dir, install_dir, sora_version, platform: str):
+def install_lyra(version, source_dir, install_dir, sora_version, platform: str, local_sdk_install_dir: Optional[str] = None):
+    if local_sdk_install_dir:
+        os.symlink(
+            os.path.join(local_sdk_install_dir, 'lyra'),
+            os.path.join(install_dir, 'lyra')
+        )
+    else:
+        install_lyra_from_gh_release(version, source_dir, install_dir, platform)
+
+
+def install_lyra_from_gh_release(version, source_dir, isntall_dir, platform: str):
     win = platform.startswith("windows_")
     filename = f'lyra-{version}_sora-cpp-sdk-{sora_version}_{platform}.{"zip" if win else "tar.gz"}'
     rm_rf(os.path.join(source_dir, filename))
@@ -565,7 +594,17 @@ def install_sdl2(version, source_dir, build_dir, install_dir, debug: bool, platf
 
 
 @versioned
-def install_sora(version, source_dir, install_dir, platform: str):
+def install_sora(version, source_dir, install_dir, platform: str, local_sdk_install_dir: Optional[str] = None):
+    if local_sdk_install_dir:
+        os.symlink(
+            os.path.join(local_sdk_install_dir, 'sora'),
+            os.path.join(install_dir, 'sora')
+        )
+    else:
+        install_sora_from_gh_release(version, source_dir, install_dir, platform)
+
+
+def install_sora_from_gh_release(version, source_dir, install_dir, platform: str, local_sdk_install_dir: Optional[str]):
     win = platform.startswith("windows_")
     filename = f'sora-cpp-sdk-{version}_{platform}.{"zip" if win else "tar.gz"}'
     rm_rf(os.path.join(source_dir, filename))
