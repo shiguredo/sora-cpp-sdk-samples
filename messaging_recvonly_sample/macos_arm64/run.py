@@ -108,7 +108,7 @@ def main():
     source_dir = os.path.join(BASE_DIR, '_source', dir, configuration_dir)
     build_dir = os.path.join(BASE_DIR, '_build', dir, configuration_dir)
     install_dir = os.path.join(BASE_DIR, '_install', dir, configuration_dir)
-    local_sdk_install_dir = os.path.join(args.local_sdk, '_install', dir, configuration_dir)
+    local_sdk_install_dir = os.path.join(args.local_sdk, '_install', dir, configuration_dir) if args.local_sdk else None
     mkdir_p(source_dir)
     mkdir_p(build_dir)
     mkdir_p(install_dir)

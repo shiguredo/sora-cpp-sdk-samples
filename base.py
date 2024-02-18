@@ -438,7 +438,7 @@ def install_boost(version, source_dir, install_dir, sora_version, platform: str,
             os.path.join(install_dir, 'boost')
         )
     else:
-        install_boost_from_gh_release(version, source_dir, install_dir, platform)
+        install_boost_from_gh_release(version, source_dir, install_dir, sora_version, platform)
 
 def install_boost_from_gh_release(version, source_dir, install_dir, sora_version, platform: str):
     win = platform.startswith("windows_")
@@ -459,10 +459,10 @@ def install_lyra(version, source_dir, install_dir, sora_version, platform: str, 
             os.path.join(install_dir, 'lyra')
         )
     else:
-        install_lyra_from_gh_release(version, source_dir, install_dir, platform)
+        install_lyra_from_gh_release(version, source_dir, install_dir, sora_version, platform)
 
 
-def install_lyra_from_gh_release(version, source_dir, isntall_dir, platform: str):
+def install_lyra_from_gh_release(version, source_dir, install_dir, sora_version, platform: str):
     win = platform.startswith("windows_")
     filename = f'lyra-{version}_sora-cpp-sdk-{sora_version}_{platform}.{"zip" if win else "tar.gz"}'
     rm_rf(os.path.join(source_dir, filename))
@@ -604,7 +604,7 @@ def install_sora(version, source_dir, install_dir, platform: str, local_sdk_inst
         install_sora_from_gh_release(version, source_dir, install_dir, platform)
 
 
-def install_sora_from_gh_release(version, source_dir, install_dir, platform: str, local_sdk_install_dir: Optional[str]):
+def install_sora_from_gh_release(version, source_dir, install_dir, platform: str):
     win = platform.startswith("windows_")
     filename = f'sora-cpp-sdk-{version}_{platform}.{"zip" if win else "tar.gz"}'
     rm_rf(os.path.join(source_dir, filename))
