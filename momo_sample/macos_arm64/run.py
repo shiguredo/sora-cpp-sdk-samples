@@ -27,46 +27,47 @@ from base import (  # noqa
 )
 
 
-def install_deps(source_dir, build_dir, install_dir, debug, local_sdk_install_dir: Optional[str] = None):
+def install_deps(source_dir, build_dir, install_dir, debug, skip_sdk = False):
     with cd(BASE_DIR):
         version = read_version_file('VERSION')
 
         # WebRTC
-        install_webrtc_args = {
-            'version': version['WEBRTC_BUILD_VERSION'],
-            'version_file': os.path.join(install_dir, 'webrtc.version'),
-            'source_dir': source_dir,
-            'install_dir': install_dir,
-            'platform': 'macos_arm64',
-            'local_sdk_install_dir': local_sdk_install_dir,
-        }
-        install_webrtc(**install_webrtc_args)
+        # WebRTC は厳密には Sora CPP SDK の一部ではないが、 SDK のものを参照したいので skip_sdk = True の場合はスキップする
+        if not skip_sdk:
+            install_webrtc_args = {
+                'version': version['WEBRTC_BUILD_VERSION'],
+                'version_file': os.path.join(install_dir, 'webrtc.version'),
+                'source_dir': source_dir,
+                'install_dir': install_dir,
+                'platform': 'macos_arm64',
+            }
+            install_webrtc(**install_webrtc_args)
 
         sysroot = cmdcap(['xcrun', '--sdk', 'macosx', '--show-sdk-path'])
 
         # Boost
-        install_boost_args = {
-            'version': version['BOOST_VERSION'],
-            'version_file': os.path.join(install_dir, 'boost.version'),
-            'source_dir': source_dir,
-            'install_dir': install_dir,
-            'sora_version': version['SORA_CPP_SDK_VERSION'],
-            'platform': 'macos_arm64',
-            'local_sdk_install_dir': local_sdk_install_dir,
-        }
-        install_boost(**install_boost_args)
+        if not skip_sdk:
+            install_boost_args = {
+                'version': version['BOOST_VERSION'],
+                'version_file': os.path.join(install_dir, 'boost.version'),
+                'source_dir': source_dir,
+                'install_dir': install_dir,
+                'sora_version': version['SORA_CPP_SDK_VERSION'],
+                'platform': 'macos_arm64',
+            }
+            install_boost(**install_boost_args)
 
         # Lyra
-        install_lyra_args = {
-            'version': version['LYRA_VERSION'],
-            'version_file': os.path.join(install_dir, 'lyra.version'),
-            'source_dir': source_dir,
-            'install_dir': install_dir,
-            'sora_version': version['SORA_CPP_SDK_VERSION'],
-            'platform': 'macos_arm64',
-            'local_sdk_install_dir': local_sdk_install_dir,
-        }
-        install_lyra(**install_lyra_args)
+        if not skip_sdk:
+            install_lyra_args = {
+                'version': version['LYRA_VERSION'],
+                'version_file': os.path.join(install_dir, 'lyra.version'),
+                'source_dir': source_dir,
+                'install_dir': install_dir,
+                'sora_version': version['SORA_CPP_SDK_VERSION'],
+                'platform': 'macos_arm64',
+            }
+            install_lyra(**install_lyra_args)
 
         # CMake
         install_cmake_args = {
@@ -102,15 +103,15 @@ def install_deps(source_dir, build_dir, install_dir, debug, local_sdk_install_di
         install_sdl2(**install_sdl2_args)
 
         # Sora C++ SDK
-        install_sora_args = {
-            'version': version['SORA_CPP_SDK_VERSION'],
-            'version_file': os.path.join(install_dir, 'sora.version'),
-            'source_dir': source_dir,
-            'install_dir': install_dir,
-            'platform': 'macos_arm64',
-            'local_sdk_install_dir': local_sdk_install_dir,
-        }
-        install_sora(**install_sora_args)
+        if not skip_sdk:
+            install_sora_args = {
+                'version': version['SORA_CPP_SDK_VERSION'],
+                'version_file': os.path.join(install_dir, 'sora.version'),
+                'source_dir': source_dir,
+                'install_dir': install_dir,
+                'platform': 'macos_arm64',
+            }
+            install_sora(**install_sora_args)
 
         # CLI11
         install_cli11_args = {
@@ -132,27 +133,35 @@ def main():
     source_dir = os.path.join(BASE_DIR, '_source', dir, configuration_dir)
     build_dir = os.path.join(BASE_DIR, '_build', dir, configuration_dir)
     install_dir = os.path.join(BASE_DIR, '_install', dir, configuration_dir)
-    local_sdk_install_dir = os.path.join(args.local_sdk, '_install', dir, configuration_dir) if args.local_sdk else None
     mkdir_p(source_dir)
     mkdir_p(build_dir)
     mkdir_p(install_dir)
 
-    install_deps(source_dir, build_dir, install_dir, args.debug, local_sdk_install_dir)
+    skip_sdk = 0 < len(args.local_sdk)
+
+    install_deps(source_dir, build_dir, install_dir, args.debug, skip_sdk)
 
     configuration = 'Debug' if args.debug else 'Release'
 
     sample_build_dir = os.path.join(build_dir, 'momo_sample')
     mkdir_p(sample_build_dir)
     with cd(sample_build_dir):
-        webrtc_info = get_webrtc_info(False, source_dir, build_dir, install_dir)
+
+        local_sdk_install_dir = os.path.join(args.local_sdk, '_install', dir, configuration_dir) if args.local_sdk else None
+        if skip_sdk:
+            local_sdk_source_dir = os.path.join(args.local_sdk, '_source', dir, configuration_dir) if args.local_sdk else None
+            local_sdk_build_dir = os.path.join(args.local_sdk, '_build', dir, configuration_dir) if args.local_sdk else None
+            webrtc_info = get_webrtc_info(False, local_sdk_source_dir, local_sdk_build_dir, local_sdk_install_dir)
+        else:
+            webrtc_info = get_webrtc_info(False, source_dir, build_dir, install_dir)
 
         cmake_args = []
         cmake_args.append(f'-DCMAKE_BUILD_TYPE={configuration}')
-        cmake_args.append(f"-DBOOST_ROOT={cmake_path(os.path.join(install_dir, 'boost'))}")
-        cmake_args.append(f"-DLYRA_DIR={cmake_path(os.path.join(install_dir, 'lyra'))}")
+        cmake_args.append(f"-DBOOST_ROOT={cmake_path(os.path.join(local_sdk_install_dir if local_sdk_install_dir else install_dir, 'boost'))}")
+        cmake_args.append(f"-DLYRA_DIR={cmake_path(os.path.join(local_sdk_install_dir if local_sdk_install_dir else install_dir, 'lyra'))}")
         cmake_args.append(f"-DWEBRTC_INCLUDE_DIR={cmake_path(webrtc_info.webrtc_include_dir)}")
         cmake_args.append(f"-DWEBRTC_LIBRARY_DIR={cmake_path(webrtc_info.webrtc_library_dir)}")
-        cmake_args.append(f"-DSORA_DIR={cmake_path(os.path.join(install_dir, 'sora'))}")
+        cmake_args.append(f"-DSORA_DIR={cmake_path(os.path.join(local_sdk_install_dir if local_sdk_install_dir else install_dir, 'sora'))}")
         cmake_args.append(f"-DCLI11_DIR={cmake_path(os.path.join(install_dir, 'cli11'))}")
         cmake_args.append(f"-DSDL2_DIR={cmake_path(os.path.join(install_dir, 'sdl2'))}")
 
