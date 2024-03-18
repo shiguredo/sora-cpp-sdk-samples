@@ -20,6 +20,10 @@
 - [UPDATE] VERSION のライブラリをアップデートする
   - SORA_CPP_SDK_VERSION を 2024.3.1 にあげる
   - @enm10k
+- [UPDATE] Github Actions の setup-msbuild と upload-artifact のバージョンをアップデート
+  - Node.js 16 の Deprecated に伴う対応
+    - setup-msbuild を 1.1 から 2 にアップデート
+    - upload-artifact を 3 から 4 にアップデート
 
 ## sora-cpp-sdk-2024.2.0
 

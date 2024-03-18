@@ -19,7 +19,7 @@ jobs:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
-      - uses: microsoft/setup-msbuild@v1.1
+      - uses: microsoft/setup-msbuild@v2
       - run: python3 sdl_sample/${{ matrix.name }}/run.py
       - run: python3 sumomo/${{ matrix.name }}/run.py
       - run: python3 messaging_recvonly_sample/${{ matrix.name }}/run.py
@@ -30,7 +30,7 @@ jobs:
           cp _build\${{ matrix.name }}\release\sumomo\Release\sumomo.exe ${{ matrix.name }}
           cp _build\${{ matrix.name }}\release\messaging_recvonly_sample\Release\messaging_recvonly_sample.exe ${{ matrix.name }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: ${{ matrix.name }}
@@ -54,7 +54,7 @@ jobs:
           cp _build/${{ matrix.name }}/release/sumomo/sumomo ${{ matrix.name }}
           cp _build/${{ matrix.name }}/release/messaging_recvonly_sample/messaging_recvonly_sample ${{ matrix.name }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: ${{ matrix.name }}
@@ -91,7 +91,7 @@ jobs:
           cp _build/${{ matrix.name }}/release/sumomo/sumomo ${{ matrix.name }}
           cp _build/${{ matrix.name }}/release/messaging_recvonly_sample/messaging_recvonly_sample ${{ matrix.name }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: ${{ matrix.name }}
@@ -120,7 +120,7 @@ jobs:
           cp _build/${{ matrix.name }}/release/sumomo/sumomo ${{ matrix.name }}
           cp _build/${{ matrix.name }}/release/messaging_recvonly_sample/messaging_recvonly_sample ${{ matrix.name }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: ${{ matrix.name }}
