@@ -393,6 +393,26 @@ def build_webrtc(platform, webrtc_build_dir, webrtc_build_args, debug):
         )
         copyfile_if_different(src_config, dst_config)
 
+        # __assertion_handler をコピーする
+        src_assertion = os.path.join(
+            webrtc_source_dir,
+            "src",
+            "buildtools",
+            "third_party",
+            "libc++",
+            "__assertion_handler",
+        )
+        dst_assertion = os.path.join(
+            webrtc_source_dir,
+            "src",
+            "third_party",
+            "libc++",
+            "src",
+            "include",
+            "__assertion_handler",
+        )
+        copyfile_if_different(src_assertion, dst_assertion)
+
 
 class WebrtcInfo(NamedTuple):
     version_file: str
@@ -543,6 +563,17 @@ def install_llvm(
             os.path.join(llvm_dir, "buildtools", "third_party", "libc++", "__config_site"),
             os.path.join(llvm_dir, "libcxx", "include", "__config_site"),
         )
+
+        # __assertion_handler をコピーする
+        # 背景: https://source.chromium.org/chromium/_/chromium/external/github.com/llvm/llvm-project/libcxx.git/+/1e5bda0d1ce8e346955aa4a85eaab258785f11f7
+        shutil.copyfile(
+            # NOTE(enm10k): 最初は default_assertion_handler.in をコピーしていたが、 buildtools 以下に
+            # default_assertion_handler.in から生成されたと思われる __assertion_handler が存在するため、それをコピーする
+            # os.path.join(llvm_dir, "libcxx", "vendor", "llvm", "default_assertion_handler.in"),
+            os.path.join(llvm_dir, "buildtools", "third_party", "libc++", "__assertion_handler"),
+            os.path.join(llvm_dir, "libcxx", "include", "__assertion_handler"),
+        )
+
 
 
 @versioned
